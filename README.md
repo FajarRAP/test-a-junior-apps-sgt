@@ -12,11 +12,11 @@ Technical Test Junior Apps PT Summit Global Teknologi
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/FajarRAP/test_a_junior_apps_sgt.git
+   git clone https://github.com/FajarRAP/test-a-junior-apps-sgt.git
    ```
 2. **Navigate to the project directory:**
    ```bash
-   cd test_a_junior_apps_sgt
+   cd test-a-junior-apps-sgt
    ```
 3. **Install dependencies:**
    ```bash
