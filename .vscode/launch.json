@@ -1,0 +1,25 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "test_a_junior_apps_sgt (debug mode)",
+      "request": "launch",
+      "type": "dart",
+      "toolArgs": ["--dart-define-from-file", ".env"]
+    },
+    {
+      "name": "test_a_junior_apps_sgt (profile mode)",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "profile",
+      "toolArgs": ["--dart-define-from-file", ".env"]
+    },
+    {
+      "name": "test_a_junior_apps_sgt (release mode)",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "release",
+      "toolArgs": ["--dart-define-from-file", ".env"]
+    }
+  ]
+}
