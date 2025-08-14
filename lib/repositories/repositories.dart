@@ -1,7 +1,8 @@
 import '../entities/coordinate.dart';
+import '../entities/current_weather.dart';
 
 abstract class Repositories {
-  Future<Object> fetchCurrentWeather({required Coordinate coordinate});
+  Future<CurrentWeather> fetchCurrentWeather({required Coordinate coordinate});
   Future<List> fetchDailyWeather({required Coordinate coordinate});
   Future<List> fetchHourlyWeather({required Coordinate coordinate});
 }
