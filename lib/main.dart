@@ -1,8 +1,19 @@
 import 'package:flutter/material.dart';
 
+import 'data/remote_data_sources.dart';
+import 'data/remote_data_sources_mock.dart';
 import 'pages/home_page.dart';
+import 'repositories/repositories.dart';
+import 'repositories/repositories_impl.dart';
 
-void main() => runApp(const MyApp());
+late final RemoteDataSources<String> remoteDataSources;
+late final Repositories repositories;
+
+void main() {
+  remoteDataSources = RemoteDataSourcesMock();
+  repositories = RepositoriesImpl(remoteDataSources: remoteDataSources);
+  runApp(const MyApp());
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
