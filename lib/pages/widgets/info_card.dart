@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../../entities/mini_weather.dart';
+import '../../entities/forecast_weather.dart';
 
 class InfoCard extends StatelessWidget {
   const InfoCard({
     super.key,
     this.isActive = false,
-    required this.miniWeather,
+    required this.forecastWeather,
     required this.pattern,
   });
 
   final bool isActive;
-  final MiniWeather miniWeather;
+  final ForecastWeather forecastWeather;
   final String pattern;
 
   @override
@@ -37,7 +37,7 @@ class InfoCard extends StatelessWidget {
         child: Column(
           children: <Widget>[
             Text(
-              DateFormat(pattern).format(miniWeather.datetime.toLocal()),
+              DateFormat(pattern).format(forecastWeather.datetime.toLocal()),
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 15,
@@ -45,10 +45,10 @@ class InfoCard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24),
-            Image.network(_getWeatherIconUrl(miniWeather.weather.icon)),
+            Image.network('https:${forecastWeather.iconUrl}'),
             const SizedBox(height: 24),
             Text(
-              '${(miniWeather.temperature.round())}°',
+              '${(forecastWeather.temperature.round())}°',
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 20,
@@ -61,6 +61,3 @@ class InfoCard extends StatelessWidget {
     );
   }
 }
-
-String _getWeatherIconUrl(String iconCode) =>
-    'https://openweathermap.org/img/wn/$iconCode.png';
