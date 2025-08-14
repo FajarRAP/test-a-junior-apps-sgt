@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class MiniWeatherList extends StatelessWidget {
-  const MiniWeatherList({
+class ForecastWeatherList extends StatelessWidget {
+  const ForecastWeatherList({
     super.key,
     required this.future,
     required this.child,
