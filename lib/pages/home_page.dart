@@ -1,18 +1,23 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../entities/coordinate.dart';
-import '../entities/mini_weather.dart';
+import '../entities/forecast_weather.dart';
 import '../main.dart';
+import 'widgets/current_weather_data_card.dart';
 import 'widgets/info_card.dart';
-import 'widgets/mini_weather_list.dart';
+import 'widgets/forecast_weather_list.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.sizeOf(context).height -
+        MediaQuery.viewPaddingOf(context).top -
+        100;
     const coordinate = Coordinate(latitude: 45.4215, longitude: -75.6972);
 
     return Scaffold(
@@ -67,7 +72,7 @@ class HomePage extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      '${data.temperature}°',
+                      '${data.temperature.round()}°C',
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 96,
@@ -85,11 +90,11 @@ class HomePage extends StatelessWidget {
                         ),
                         children: <InlineSpan>[
                           TextSpan(
-                            text: 'H:${data.maxTemperature}° ',
+                            text: 'H:${data.maxTemperature.round()}°C ',
                             style: const TextStyle(color: Colors.white),
                           ),
                           TextSpan(
-                            text: 'L:${data.minTemperature}°',
+                            text: 'L:${data.minTemperature.round()}°C',
                             style: const TextStyle(color: Colors.white),
                           ),
                         ],
@@ -104,115 +109,182 @@ class HomePage extends StatelessWidget {
                 bottom: 0,
                 left: 0,
                 right: 0,
-                child: ClipRRect(
-                  borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(32),
-                  ),
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(
-                      sigmaX: 20,
-                      sigmaY: 20,
-                    ),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          colors: <Color>[
-                            Color(0xFF2E335A),
-                            Color(0xFF1C1B33),
-                          ],
-                          end: Alignment.bottomRight,
-                        ).withOpacity(.2),
-                      ),
-                      height: 350,
-                      child: DefaultTabController(
-                        initialIndex: 0,
-                        length: 2,
-                        child: Column(
-                          children: <Widget>[
-                            TabBar(
-                              dividerColor: Colors.transparent,
-                              indicatorAnimation: TabIndicatorAnimation.elastic,
-                              tabs: <Widget>[
-                                Tab(
-                                  icon: Text(
-                                    'Hourly Forecast',
-                                    style: const TextStyle(
-                                      color: Color(0x99EBEBF5),
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ),
-                                Tab(
-                                  icon: Text(
-                                    'Weekly Forecast',
-                                    style: const TextStyle(
-                                      color: Color(0x99EBEBF5),
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 24),
-                            SizedBox(
-                              height: 200,
-                              child: TabBarView(
-                                children: <Widget>[
-                                  MiniWeatherList(
-                                    future: repositories.fetchHourlyWeather(
-                                        coordinate: coordinate),
-                                    child: (snapshot) {
-                                      final miniWeathers =
-                                          List<MiniWeather>.from(
-                                              snapshot.data!);
-
-                                      return ListView.separated(
-                                        itemBuilder: (context, index) =>
-                                            InfoCard(
-                                          miniWeather: miniWeathers[index],
-                                          pattern: 'h a',
-                                        ),
-                                        separatorBuilder: (context, index) =>
-                                            const SizedBox(width: 12),
-                                        itemCount: miniWeathers.length,
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 20,
-                                        ),
-                                        scrollDirection: Axis.horizontal,
-                                      );
-                                    },
-                                  ),
-                                  MiniWeatherList(
-                                    future: repositories.fetchDailyWeather(
-                                        coordinate: coordinate),
-                                    child: (snapshot) {
-                                      final miniWeathers =
-                                          List<MiniWeather>.from(
-                                              snapshot.data!);
-
-                                      return ListView.separated(
-                                        itemBuilder: (context, index) =>
-                                            InfoCard(
-                                          miniWeather: miniWeathers[index],
-                                          pattern: 'E',
-                                        ),
-                                        separatorBuilder: (context, index) =>
-                                            const SizedBox(width: 12),
-                                        itemCount: miniWeathers.length,
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 20,
-                                        ),
-                                        scrollDirection: Axis.horizontal,
-                                      );
-                                    },
-                                  ),
+                child: SizedBox(
+                  height: height,
+                  child: DraggableScrollableSheet(
+                    builder: (context, scrollController) =>
+                        SingleChildScrollView(
+                      controller: scrollController,
+                      physics: const BouncingScrollPhysics(),
+                      child: ClipRRect(
+                        borderRadius: const BorderRadius.vertical(
+                          top: Radius.circular(32),
+                        ),
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(
+                            sigmaX: 20,
+                            sigmaY: 20,
+                          ),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                colors: <Color>[
+                                  Color(0xFF2E335A),
+                                  Color(0xFF1C1B33),
                                 ],
+                                end: Alignment.bottomRight,
+                              ).withOpacity(.2),
+                            ),
+                            height: height,
+                            child: SingleChildScrollView(
+                              controller: scrollController,
+                              child: DefaultTabController(
+                                initialIndex: 0,
+                                length: 2,
+                                child: Column(
+                                  children: <Widget>[
+                                    TabBar(
+                                      dividerColor: Colors.transparent,
+                                      indicatorAnimation:
+                                          TabIndicatorAnimation.elastic,
+                                      tabs: <Widget>[
+                                        Tab(
+                                          icon: Text(
+                                            'Hourly Forecast',
+                                            style: const TextStyle(
+                                              color: Color(0x99EBEBF5),
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ),
+                                        Tab(
+                                          icon: Text(
+                                            'Weekly Forecast',
+                                            style: const TextStyle(
+                                              color: Color(0x99EBEBF5),
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 24),
+                                    SizedBox(
+                                      height: 200,
+                                      child: TabBarView(
+                                        children: <Widget>[
+                                          ForecastWeatherList(
+                                            future:
+                                                repositories.fetchHourlyWeather(
+                                                    coordinate: coordinate),
+                                            child: (snapshot) {
+                                              final forecastWeathers =
+                                                  List<ForecastWeather>.from(
+                                                      snapshot.data!);
+
+                                              return ListView.separated(
+                                                itemBuilder: (context, index) =>
+                                                    InfoCard(
+                                                  forecastWeather:
+                                                      forecastWeathers[index],
+                                                  pattern: 'h a',
+                                                ),
+                                                separatorBuilder: (context,
+                                                        index) =>
+                                                    const SizedBox(width: 12),
+                                                itemCount:
+                                                    forecastWeathers.length,
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                  horizontal: 20,
+                                                ),
+                                                scrollDirection:
+                                                    Axis.horizontal,
+                                              );
+                                            },
+                                          ),
+                                          ForecastWeatherList(
+                                            future:
+                                                repositories.fetchDailyWeather(
+                                                    coordinate: coordinate),
+                                            child: (snapshot) {
+                                              final forecastWeathers =
+                                                  List<ForecastWeather>.from(
+                                                      snapshot.data!);
+
+                                              return ListView.separated(
+                                                itemBuilder: (context, index) =>
+                                                    InfoCard(
+                                                  forecastWeather:
+                                                      forecastWeathers[index],
+                                                  pattern: 'E',
+                                                ),
+                                                separatorBuilder: (context,
+                                                        index) =>
+                                                    const SizedBox(width: 12),
+                                                itemCount:
+                                                    forecastWeathers.length,
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                  horizontal: 20,
+                                                ),
+                                                scrollDirection:
+                                                    Axis.horizontal,
+                                              );
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    GridView.count(
+                                      crossAxisCount: 2,
+                                      crossAxisSpacing: 12,
+                                      mainAxisSpacing: 12,
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 20,
+                                        vertical: 24,
+                                      ),
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      shrinkWrap: true,
+                                      children: <Widget>[
+                                        CurrentWeatherDataCard(
+                                          title: 'SUNRISE',
+                                          value: DateFormat('HH:mm a')
+                                              .format(data.sunrise),
+                                        ),
+                                        CurrentWeatherDataCard(
+                                          title: 'SUNSET',
+                                          value: DateFormat('HH:mm a')
+                                              .format(data.sunset),
+                                        ),
+                                        CurrentWeatherDataCard(
+                                          title: 'WIND',
+                                          value: '${data.windSpeed} m/s',
+                                        ),
+                                        CurrentWeatherDataCard(
+                                          title: 'FEELS LIKE',
+                                          value:
+                                              '${data.feelsLikeTemperature.round()}°C',
+                                        ),
+                                        CurrentWeatherDataCard(
+                                          title: 'HUMIDITY',
+                                          value: '${data.humidity} %',
+                                        ),
+                                        CurrentWeatherDataCard(
+                                          title: 'VISIBILITY',
+                                          value: '${data.visibility} m',
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
-                          ],
+                          ),
                         ),
                       ),
                     ),
