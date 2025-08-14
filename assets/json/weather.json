@@ -1,49 +1,44 @@
 {
     "coord": {
-        "lon": 7.367,
-        "lat": 45.133
+        "lon": 110.3859,
+        "lat": -7.8341
     },
     "weather": [
         {
-            "id": 501,
-            "main": "Rain",
-            "description": "moderate rain",
-            "icon": "10d"
+            "id": 804,
+            "main": "Clouds",
+            "description": "overcast clouds",
+            "icon": "04n"
         }
     ],
     "base": "stations",
     "main": {
-        "temp": 284.2,
-        "feels_like": 282.93,
-        "temp_min": 283.06,
-        "temp_max": 286.82,
-        "pressure": 1021,
-        "humidity": 60,
-        "sea_level": 1021,
-        "grnd_level": 910
+        "temp": 26.43,
+        "feels_like": 26.43,
+        "temp_min": 26.43,
+        "temp_max": 26.43,
+        "pressure": 1014,
+        "humidity": 72,
+        "sea_level": 1014,
+        "grnd_level": 998
     },
     "visibility": 10000,
     "wind": {
-        "speed": 4.09,
-        "deg": 121,
-        "gust": 3.47
-    },
-    "rain": {
-        "1h": 2.73
+        "speed": 0.78,
+        "deg": 62,
+        "gust": 3.9
     },
     "clouds": {
-        "all": 83
+        "all": 85
     },
-    "dt": 1726660758,
+    "dt": 1755183700,
     "sys": {
-        "type": 1,
-        "id": 6736,
-        "country": "IT",
-        "sunrise": 1726636384,
-        "sunset": 1726680975
+        "country": "ID",
+        "sunrise": 1755125276,
+        "sunset": 1755167919
     },
-    "timezone": 7200,
-    "id": 3165523,
-    "name": "Province of Turin",
+    "timezone": 25200,
+    "id": 1621177,
+    "name": "Yogyakarta",
     "cod": 200
 }
