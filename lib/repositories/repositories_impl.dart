@@ -3,7 +3,7 @@ import 'dart:convert';
 import '../data/remote_data_sources.dart';
 import '../entities/coordinate.dart';
 import '../entities/current_weather.dart';
-import '../entities/mini_weather.dart';
+import '../entities/forecast_weather.dart';
 import 'repositories.dart';
 
 class RepositoriesImpl extends Repositories {
@@ -24,8 +24,8 @@ class RepositoriesImpl extends Repositories {
       final data = jsonDecode(response);
 
       weather = CurrentWeather.fromJson(data);
-    } catch (e) {
-      throw Exception('Failed to fetch current weather: $e');
+    } catch (e, s) {
+      throw Exception('Failed to fetch current weather: $e $s');
     }
 
     return weather;
@@ -33,41 +33,45 @@ class RepositoriesImpl extends Repositories {
 
   @override
   Future<List> fetchDailyWeather({required Coordinate coordinate}) async {
-    final miniWeathers = <MiniWeather>[];
+    final forecastWeathers = <ForecastWeather>[];
 
     try {
       await Future.delayed(const Duration(seconds: 1));
 
       final response =
           await remoteDataSources.fetchDailyWeather(coordinate: coordinate);
-      final data = jsonDecode(response);
-      final datas = List<Map<String, dynamic>>.from(data['list']);
+      final json = jsonDecode(response);
+      final forecastday =
+          List<Map<String, dynamic>>.from(json['forecast']['forecastday']);
 
-      miniWeathers.addAll(datas.map(MiniWeather.fromDailyJson));
+      forecastWeathers.addAll(forecastday.map(ForecastWeather.fromDailyJson));
     } catch (e) {
       throw Exception('Failed to fetch daily weather: $e');
     }
 
-    return miniWeathers;
+    return forecastWeathers;
   }
 
   @override
   Future<List> fetchHourlyWeather({required Coordinate coordinate}) async {
-    final miniWeathers = <MiniWeather>[];
+    final forecastWeathers = <ForecastWeather>[];
 
     try {
       await Future.delayed(const Duration(seconds: 1));
 
       final response =
           await remoteDataSources.fetchHourlyWeather(coordinate: coordinate);
-      final data = jsonDecode(response);
-      final datas = List<Map<String, dynamic>>.from(data['list']);
+      final json = jsonDecode(response);
+      final forecastday =
+          List<Map<String, dynamic>>.from(json['forecast']['forecastday'])
+              .first;
+      final hours = List<Map<String, dynamic>>.from(forecastday['hour']);
 
-      miniWeathers.addAll(datas.map(MiniWeather.fromHourlyJson));
+      forecastWeathers.addAll(hours.map(ForecastWeather.fromHourlyJson));
     } catch (e) {
       throw Exception('Failed to fetch hourly weather: $e');
     }
 
-    return miniWeathers;
+    return forecastWeathers;
   }
 }
