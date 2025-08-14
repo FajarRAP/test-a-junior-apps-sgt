@@ -7,17 +7,15 @@ import '../entities/coordinate.dart';
 import '../entities/forecast_weather.dart';
 import '../main.dart';
 import 'widgets/current_weather_data_card.dart';
-import 'widgets/info_card.dart';
 import 'widgets/forecast_weather_list.dart';
+import 'widgets/info_card.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.sizeOf(context).height -
-        MediaQuery.viewPaddingOf(context).top -
-        100;
+    final height = MediaQuery.sizeOf(context).height * .5;
     const coordinate = Coordinate(latitude: 45.4215, longitude: -75.6972);
 
     return Scaffold(
@@ -63,13 +61,25 @@ class HomePage extends StatelessWidget {
                 right: 0,
                 child: Column(
                   children: <Widget>[
-                    Text(
-                      data.city,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 34,
-                        fontWeight: FontWeight.w400,
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          data.city,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 34,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {},
+                          icon: const Icon(
+                            Icons.location_pin,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
                     ),
                     Text(
                       '${data.temperature.round()}°C',
@@ -112,6 +122,7 @@ class HomePage extends StatelessWidget {
                 child: SizedBox(
                   height: height,
                   child: DraggableScrollableSheet(
+                    minChildSize: .33,
                     builder: (context, scrollController) =>
                         SingleChildScrollView(
                       controller: scrollController,
@@ -294,6 +305,12 @@ class HomePage extends StatelessWidget {
             ],
           );
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: const Icon(
+          Icons.logout_outlined,
+        ),
       ),
     );
   }
