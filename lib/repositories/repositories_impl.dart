@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:http/http.dart';
+
 import '../data/remote_data_sources.dart';
 import '../entities/coordinate.dart';
 import '../entities/current_weather.dart';
@@ -9,7 +11,7 @@ import 'repositories.dart';
 class RepositoriesImpl extends Repositories {
   RepositoriesImpl({required this.remoteDataSources});
 
-  final RemoteDataSources<String> remoteDataSources;
+  final RemoteDataSources<Response> remoteDataSources;
 
   @override
   Future<CurrentWeather> fetchCurrentWeather(
@@ -17,15 +19,13 @@ class RepositoriesImpl extends Repositories {
     late CurrentWeather weather;
 
     try {
-      await Future.delayed(const Duration(seconds: 1));
-
       final response =
           await remoteDataSources.fetchCurrentWeather(coordinate: coordinate);
-      final data = jsonDecode(response);
+      final data = jsonDecode(response.body);
 
       weather = CurrentWeather.fromJson(data);
-    } catch (e, s) {
-      throw Exception('Failed to fetch current weather: $e $s');
+    } catch (e) {
+      throw Exception('Failed to fetch current weather');
     }
 
     return weather;
@@ -36,17 +36,15 @@ class RepositoriesImpl extends Repositories {
     final forecastWeathers = <ForecastWeather>[];
 
     try {
-      await Future.delayed(const Duration(seconds: 1));
-
       final response =
           await remoteDataSources.fetchDailyWeather(coordinate: coordinate);
-      final json = jsonDecode(response);
+      final json = jsonDecode(response.body);
       final forecastday =
           List<Map<String, dynamic>>.from(json['forecast']['forecastday']);
 
       forecastWeathers.addAll(forecastday.map(ForecastWeather.fromDailyJson));
     } catch (e) {
-      throw Exception('Failed to fetch daily weather: $e');
+      throw Exception('Failed to fetch daily weather');
     }
 
     return forecastWeathers;
@@ -57,11 +55,9 @@ class RepositoriesImpl extends Repositories {
     final forecastWeathers = <ForecastWeather>[];
 
     try {
-      await Future.delayed(const Duration(seconds: 1));
-
       final response =
           await remoteDataSources.fetchHourlyWeather(coordinate: coordinate);
-      final json = jsonDecode(response);
+      final json = jsonDecode(response.body);
       final forecastday =
           List<Map<String, dynamic>>.from(json['forecast']['forecastday'])
               .first;
@@ -69,7 +65,7 @@ class RepositoriesImpl extends Repositories {
 
       forecastWeathers.addAll(hours.map(ForecastWeather.fromHourlyJson));
     } catch (e) {
-      throw Exception('Failed to fetch hourly weather: $e');
+      throw Exception('Failed to fetch hourly weather');
     }
 
     return forecastWeathers;
