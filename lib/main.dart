@@ -6,7 +6,7 @@ import 'cubit/coordinate_cubit.dart';
 import 'cubit/weather_cubit.dart';
 import 'data/remote_data_sources.dart';
 import 'data/remote_data_sources_impl.dart';
-import 'pages/home_page.dart';
+import 'pages/splash_screen_page.dart';
 import 'repositories/repositories.dart';
 import 'repositories/repositories_impl.dart';
 
@@ -31,9 +31,16 @@ class MyApp extends StatelessWidget {
             create: (context) => WeatherCubit(repositories: repositories)),
       ],
       child: MaterialApp(
-        home: const HomePage(),
+        home: const SplashScreenPage(),
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          inputDecorationTheme: InputDecorationTheme(
+            filled: true,
+            fillColor: Colors.white,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
         ),
         title: 'Weather App',
       ),
