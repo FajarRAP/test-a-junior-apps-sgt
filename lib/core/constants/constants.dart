@@ -7,3 +7,4 @@ const locationPermanentlyDenied = 'LOCATION_PERMANENTLY_DENIED';
 
 const backgroundImgPath = 'assets/images/background.png';
 const houseImgPath = 'assets/images/house.png';
+const logoImgPath = 'assets/images/logo.png';
