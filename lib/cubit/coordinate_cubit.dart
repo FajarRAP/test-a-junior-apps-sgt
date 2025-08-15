@@ -10,23 +10,20 @@ part 'coordinate_state.dart';
 class CoordinateCubit extends Cubit<CoordinateState> {
   CoordinateCubit() : super(CoordinateInitial());
 
-  Coordinate? coordinate;
+  late Coordinate coordinate;
 
   Future<void> getPosition() async {
     emit(CoordinateLoading());
 
     try {
-      if (coordinate == null) {
-        // read last latlong from shared preferences
-      }
-
       final position = await determinePosition();
 
       coordinate = Coordinate(
         latitude: position.latitude,
         longitude: position.longitude,
       );
-      emit(CoordinateLoaded(coordinate!));
+
+      emit(CoordinateLoaded(coordinate));
     } catch (e) {
       switch ('$e') {
         case locationOff:
