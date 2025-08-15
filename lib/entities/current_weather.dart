@@ -16,16 +16,16 @@ class CurrentWeather {
   });
 
   final String city;
-  final double feelsLikeTemperature;
-  final int humidity;
-  final double maxTemperature;
-  final double minTemperature;
+  final num feelsLikeTemperature;
+  final num humidity;
+  final num maxTemperature;
+  final num minTemperature;
   final DateTime sunrise;
   final DateTime sunset;
-  final double temperature;
-  final int visibility;
+  final num temperature;
+  final num visibility;
   final Weather weather;
-  final double windSpeed;
+  final num windSpeed;
 
   factory CurrentWeather.fromJson(Map<String, dynamic> json) => CurrentWeather(
         city: json['name'],
