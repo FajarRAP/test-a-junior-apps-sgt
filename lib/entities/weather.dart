@@ -13,7 +13,11 @@ class Weather {
 
   factory Weather.fromJson(Map<String, dynamic> json) => Weather(
         id: json['id'],
-        description: json['description'],
+        description: '${json['description']}'.splitMapJoin(' ',
+                      onMatch: (_) => ' ',
+                      onNonMatch: (notMatch) =>
+                          notMatch[0].toUpperCase() +
+                          notMatch.substring(1).toLowerCase()),
         icon: json['icon'],
         main: json['main'],
       );
