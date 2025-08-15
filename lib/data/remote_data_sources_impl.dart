@@ -1,7 +1,7 @@
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 
-import '../constants/constants.dart';
+import '../core/constants/constants.dart';
 import '../entities/coordinate.dart';
 import 'remote_data_sources.dart';
 
